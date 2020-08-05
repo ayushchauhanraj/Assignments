@@ -1,0 +1,15 @@
+public class Students {
+    
+    public static String[] mainfunction(String classId){
+        
+        Student__c[] studentList = [Select Name from Student__c  Where Class__r.Id=:classId];
+        String[] studentnames = new List<String>();
+         if(studentList != NULL && studentList.size()>0){
+             for(Student__c std : studentList){
+              studentnames.add(std.Name);  
+        }
+        }
+        return studentnames;
+    }
+    
+}

@@ -1,0 +1,17 @@
+public class StudentsInClass {
+   
+    public static  map<Class__c,set<id>> mappingStudentToClass(){   
+        map<Class__c,set<id>> coll= new map<Class__c,set<id>>();
+        Class__c[] classIds = [select Id,Name from Class__c];
+          for(Class__c Classs : classIds){
+             List<Student__c> studentIds=[select Id from Student__c Where Class__r.Id=:Classs.Id];
+             set<id> studentid = new set<id>();
+             for(Student__c student : studentIds){
+                studentid.add(student.Id);
+            }
+            coll.put(Classs,studentid);
+        }
+         return coll;
+    }
+    
+}

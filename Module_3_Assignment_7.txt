@@ -1,0 +1,24 @@
+//trigger 
+
+trigger opportunityupdateTrigger on Opportunity (after insert,after update) {
+    	List<Opportunity> opportunityList = [Select id,BillToContact__c,Manager__c from Opportunity where id In :Trigger.new];
+        OpportunityMangerSetup.setMangerField(opportunityList);
+ }
+
+//class to set the manager 
+public class OpportunityMangerSetup {
+    public static void setMangerField(List<Opportunity> opportunityList){
+    List<opportunity> newOpportunityList=new List<Opportunity>();
+    for(Opportunity opt : opportunityList){
+         if(opt.BillToContact__c !=null && opt.Manager__c == null){
+          Contact accid = [Select AccountId from Contact Where Id=:opt.BillToContact__c] ;
+            opt.Manager__c=accid.AccountId;
+      		newOpportunityList.add(opt);
+            }
+        }
+	if(newOpportunityList.size()>0){
+         update newOpportunityList;
+        }
+    }
+}
+
