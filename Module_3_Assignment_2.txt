@@ -1,17 +1,17 @@
 public class StudentsInClass {
    
-    public static  map<Class__c,set<id>> mappingStudentToClass(){   
-        map<Class__c,set<id>> coll= new map<Class__c,set<id>>();
-        Class__c[] classIds = [select Id,Name from Class__c];
-          for(Class__c Classs : classIds){
-             List<Student__c> studentIds=[select Id from Student__c Where Class__r.Id=:Classs.Id];
-             set<id> studentid = new set<id>();
-             for(Student__c student : studentIds){
-                studentid.add(student.Id);
+    public static  map<Class__c,set<id>> getMapofStudentAndClass(){   
+        map<Class__c,set<id>> classStudentIdMap= new map<Class__c,set<id>>();
+        List<Class__c> classList = [select Id,Name from Class__c];
+          for(Class__c singleClass : classList){
+             List<Student__c> studentIdList=[select Id from Student__c Where Class__r.Id=:singleClass.Id];
+             set<id> studentIdSet = new set<id>();
+             for(Student__c student : studentIdList){
+                studentIdSet.add(student.Id);
             }
-            coll.put(Classs,studentid);
+            classStudentIdMap.put(singleClass,studentIdSet);
         }
-         return coll;
+         return classStudentIdMap;
     }
     
 }
