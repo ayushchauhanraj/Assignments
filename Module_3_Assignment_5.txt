@@ -1,12 +1,12 @@
 //Schedular class
 
-global class MailToOpportunityOwner implements Schedulable{
+global class EmailToOpportunityBatch implements Schedulable{
     global void execute(SchedulableContext sc){
         date day = system.today().addDays(-30);
-        List<Opportunity> OppMailCollection=[Select OwnerId,Owner.Email from Opportunity where LastModifiedDate<=:day];
-        For(Opportunity oppSingleRecord:OppMailCollection)
+        List<Opportunity> oppMailCollection=[Select OwnerId,Owner.Email from Opportunity where LastModifiedDate<=:day];
+        For(Opportunity oppSingleRecord:oppMailCollection)
         {
-       		 EmailManager.sendMailAsync(oppSingleRecord.Owner.Email, 'Trailhead', '123 body');
+       		 EmailManager.sendEmailToOwner(oppSingleRecord.Owner.Email, 'Trailhead', '123 body');
         }
   
         }    
@@ -18,7 +18,7 @@ global class MailToOpportunityOwner implements Schedulable{
 public class EmailManager {
     
     @future(callout=true)
-    public static void sendMailAsync(String address, String subject, String body)
+    public static void sendEmailToOwner(String address, String subject, String body)
     {
         sendMail(address,subject,body);
     }
