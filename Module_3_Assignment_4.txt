@@ -1,7 +1,7 @@
 public class AllSobjects {
     public static void getSobjectList(){
-        Map<String, Schema.SObjectType> allSobject = Schema.getGlobalDescribe();
-        Schema.SObjectType[] allobject=allSobject.values();
-        System.debug(allobject);
+        Map<String, Schema.SObjectType> sobjectMap = Schema.getGlobalDescribe();
+        List<Schema.SObjectType> allobjectList=sobjectMap.values();
+        //System.debug(allobjectList);
     }
 }
