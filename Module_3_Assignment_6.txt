@@ -1,7 +1,7 @@
 public class AccountContactiDsSetup {
     public static void setContactIdonAccount(id contid){
         //get account record form given @param id
-	if(contid !=null){
+	 if(contid !=null){
         Account accountrecord = [Select Id,Name,ContactIDs__c from Account Where Id IN (Select AccountId from Contact Where id=:contid) LIMIT 1];
         if (accountrecord !=Null){
         if(accountrecord.ContactIDs__c == Null){
@@ -11,18 +11,24 @@ public class AccountContactiDsSetup {
             List<String> contactIdList = New List<String>();
             String contactIds;
             	//add all contact ids in temp list
-            for(Contact c : contactrecord){
-                 temp.add(c.id);
+            for(Contact singleContactRecord : contactList){
+                 contactIdList.add(singleContactRecord.id);
              }
              //create a comma saperated string
-            contactIds = String.join(temp,',');
-            accountrecords.ContactIDs__c=contactIds;
-            update accountrecords;
+            if(contactIdList!=Null){
+               contactIds = String.join(contactIdList,',');
+               accountrecord.ContactIDs__c=contactIds;
+            }
+           
+            update accountrecord;
            
         }else{
             //if accountrecords contactIds not nulll then check and add into it.
 	    //check null while using split function 
-            List<String> contactidsList = accountrecords.ContactIDs__c.split(',');
+	     List<String> contactidsList = new List<String>();
+            if(accountrecord.ContactIDs__c !=Null){
+             contactidsList = accountrecord.ContactIDs__c.split(',');
+            }
             Integer isContactIdExists=1;
             for(Integer i =0;i<contactidsList.size();i++){
                 if(contactidsList[i]==contid){
@@ -32,9 +38,9 @@ public class AccountContactiDsSetup {
             }
             if(isContactIdExists==1){
                 contactidsList.add(contid);
-                String idString = String.join(contactidsList,',');
-                accountrecords.ContactIDs__c=idString;
-                update accountrecords;
+                String contactIds = String.join(contactidsList,',');
+                accountrecord.ContactIDs__c=contactIds;
+                update accountrecord;
                  }
         }
      } 
