@@ -5,8 +5,8 @@ public class Students {
         Student__c[] studentList = [Select Name from Student__c  Where Class__r.Id=:classId];
         String[] studentnamesList = new List<String>();
          if(studentList != NULL && studentList.size()>0){
-             for(Student__c std : studentList){
-              studentnamesList.add(std.Name);  
+             for(Student__c singleStudent : studentList){
+              studentnamesList.add(singleStudent.Name);  
         }
         }
         return studentnamesList;
