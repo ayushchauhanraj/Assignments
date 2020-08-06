@@ -1,43 +1,44 @@
 public class AccountContactiDsSetup {
-    public static void main(id contid){
+    public static void setContactIdonAccount(id contid){
         //get account record form given @param id
 	if(contid !=null){
-        Account accountrecords = [Select Id,Name,ContactIDs__c from Account Where Id IN (Select AccountId from Contact Where id=:contid)];
-        
-        if(accountrecords.ContactIDs__c == Null){
+        Account accountrecord = [Select Id,Name,ContactIDs__c from Account Where Id IN (Select AccountId from Contact Where id=:contid) LIMIT 1];
+        if (accountrecord !=Null){
+        if(accountrecord.ContactIDs__c == Null){
             //Get records of contact whose accountId is assosiate with accountrecords id
-            List<Contact> contactrecord = [Select Id from Contact Where AccountId =:accountrecords.Id];
+            List<Contact> contactList = [Select Id from Contact Where AccountId =:accountrecord.Id];
             	
-            String[] temp = New String[]{};
-            String idString;
+            List<String> contactIdList = New List<String>();
+            String contactIds;
             	//add all contact ids in temp list
             for(Contact c : contactrecord){
                  temp.add(c.id);
              }
              //create a comma saperated string
-            idString = String.join(temp,',');
-            accountrecords.ContactIDs__c=idString;
+            contactIds = String.join(temp,',');
+            accountrecords.ContactIDs__c=contactIds;
             update accountrecords;
            
         }else{
             //if accountrecords contactIds not nulll then check and add into it.
-			
+	    //check null while using split function 
             List<String> contactidsList = accountrecords.ContactIDs__c.split(',');
-            Integer flag=1;
+            Integer isContactIdExists=1;
             for(Integer i =0;i<contactidsList.size();i++){
                 if(contactidsList[i]==contid){
-                    flag=0;
+                    isContactIdExists=0;
                     break;
                 }
             }
-            if(flag==1){
+            if(isContactIdExists==1){
                 contactidsList.add(contid);
                 String idString = String.join(contactidsList,',');
                 accountrecords.ContactIDs__c=idString;
                 update accountrecords;
                  }
         }
-     }  
+     } 
+     }
     }
 }
 
