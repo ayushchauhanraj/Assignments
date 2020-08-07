@@ -1,25 +1,22 @@
 //trigger 
-trigger opportunityupdateTrigger on Opportunity (after update) {
-    	List<Opportunity> opportunityList = [Select id,BillToContact__c,Manager__c from Opportunity where id In :Trigger.new];
-        //calling class
-	SetOpportunityManager.setManagerField(opportunityList);
+trigger opportunityupdateTrigger on Opportunity (after insert,after update) {
+     SetOpportunityManager.setMangerField(Trigger.new);
  }
 
 //class to set the manager 
 public class SetOpportunityManager {
     public static void setMangerField(List<Opportunity> opportunityList){
-    List<opportunity> newOpportunityList = new List<Opportunity>();
-    for(Opportunity singleOpportunity : opportunityList){
-         if(singleOpportunity.BillToContact__c != NULL && singleOpportunity.Manager__c == NULL){
-          Contact accountid = [Select AccountId from Contact Where Id=:singleOpportunity.BillToContact__c] ;
-	  if(accountid != null){
-            singleOpportunity.Manager__c = accountid.AccountId;
-      		newOpportunityList.add(singleOpportunity);
+        List<opportunity> newOpportunityList = new List<opportunity>();
+        for(Opportunity opportunityRecord : [Select Id,BillToContact__c,Manager__c From Opportunity Where Id IN :opportunityList AND BillToContact__c != Null AND Manager__c = NULL        ]){
+            Contact accountid = [Select AccountId from Contact Where Id=:opportunityRecord.BillToContact__c] ;
+            if(accountid != null){
+                opportunityRecord.Manager__c = accountid.AccountId;
+                newOpportunityList.add(opportunityRecord);
             }
-	    }
         }
-	if(newOpportunityList.size() > 0){
-         update newOpportunityList;
+        
+        if(newOpportunityList.size() > 0){
+            update newOpportunityList;
         }
     }
 }
