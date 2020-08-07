@@ -1,51 +1,51 @@
 public class AccountContactiDsSetup {
     public static void setContactIdonAccount(id contid){
         //get account record form given @param id
-	 if(contid !=null){
-        Account accountrecord = [Select Id,Name,ContactIDs__c from Account Where Id IN (Select AccountId from Contact Where id=:contid) LIMIT 1];
-        if (accountrecord !=Null){
-        if(accountrecord.ContactIDs__c == Null){
-            //Get records of contact whose accountId is assosiate with accountrecords id
-            List<Contact> contactList = [Select Id from Contact Where AccountId =:accountrecord.Id];
-            	
-            List<String> contactIdList = New List<String>();
-            String contactIds;
-            	//add all contact ids in temp list
-            for(Contact singleContactRecord : contactList){
-                 contactIdList.add(singleContactRecord.id);
-             }
-             //create a comma saperated string
-            if(contactIdList!=Null){
-               contactIds = String.join(contactIdList,',');
-               accountrecord.ContactIDs__c=contactIds;
-            }
-           
-            update accountrecord;
-           
-        }else{
-            //if accountrecords contactIds not nulll then check and add into it.
-	    //check null while using split function 
-	    List<String> contactidsList = new List<String>();
-            if(accountrecord.ContactIDs__c !=Null){
-               contactidsList = accountrecord.ContactIDs__c.split(',');
-            }
-            Integer isContactIdExists=1;
-            for(Integer i =0;i<contactidsList.size();i++){
-                if(contactidsList[i]==contid){
-                    isContactIdExists=0;
-                    break;
+        if(contid !=null){
+            Account accountrecord = [Select Id,Name,ContactIDs__c from Account Where Id IN (Select AccountId from Contact Where id=:contid) LIMIT 1];
+            if (accountrecord !=Null){
+                if(accountrecord.ContactIDs__c == Null){
+                    //Get records of contact whose accountId is assosiate with accountrecords id
+                    List<Contact> contactList = [Select Id from Contact Where AccountId =:accountrecord.Id];
+                    
+                    List<String> contactIdList = New List<String>();
+                    String contactIds;
+                    //add all contact ids in temp list
+                    for(Contact contactRecord : contactList){
+                        contactIdList.add(contactRecord.id);
+                    }
+                    //create a comma saperated string
+                    if(contactIdList!=Null){
+                        contactIds = String.join(contactIdList,',');
+                        accountrecord.ContactIDs__c=contactIds;
+                    }
+                    
+                    update accountrecord;
+                    
+                }else{
+                    //if accountrecords contactIds not nulll then check and add into it.
+                    //check null while using split function 
+                    List<String> contactidsList = new List<String>();
+                    if(accountrecord.ContactIDs__c !=Null){
+                        contactidsList = accountrecord.ContactIDs__c.split(',');
+                    }
+                    Integer isContactIdExists=1;
+                    for(Integer i =0;i<contactidsList.size();i++){
+                        if(contactidsList[i]==contid){
+                            isContactIdExists=0;
+                            break;
+                        }
+                    }
+                    if(isContactIdExists==1){
+                        contactidsList.add(contid);
+                        String contactIds = String.join(contactidsList,',');
+                        accountrecord.ContactIDs__c=contactIds;
+                        update accountrecord;
+                        
+                    }
                 }
-            }
-            if(isContactIdExists==1){
-                contactidsList.add(contid);
-                String contactIds = String.join(contactidsList,',');
-                accountrecord.ContactIDs__c=contactIds;
-                update accountrecord;
-                 }
+            } 
         }
-     } 
-     }
     }
 }
-
 //AccountContactiDsSetup.main('0032w00000FYcvBAAT');
