@@ -7,7 +7,7 @@ trigger opportunityupdateTrigger on Opportunity (after insert,after update) {
 public class SetOpportunityManager {
     public static void setMangerField(List<Opportunity> opportunityList){
         List<opportunity> newOpportunityList = new List<opportunity>();
-        for(Opportunity opportunityRecord : [Select Id,BillToContact__c,Manager__c From Opportunity Where Id IN :opportunityList AND BillToContact__c != Null AND Manager__c = NULL        ]){
+        for(Opportunity opportunityRecord : [Select Id,BillToContact__c,Manager__c From Opportunity Where Id IN :opportunityList AND BillToContact__c != Null AND Manager__c = NULL ]){
             Contact accountid = [Select AccountId from Contact Where Id=:opportunityRecord.BillToContact__c] ;
             if(accountid != null){
                 opportunityRecord.Manager__c = accountid.AccountId;
