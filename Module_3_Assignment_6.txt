@@ -25,9 +25,9 @@ public class AccountContactiDsSetup {
         }else{
             //if accountrecords contactIds not nulll then check and add into it.
 	    //check null while using split function 
-	     List<String> contactidsList = new List<String>();
+	    List<String> contactidsList = new List<String>();
             if(accountrecord.ContactIDs__c !=Null){
-             contactidsList = accountrecord.ContactIDs__c.split(',');
+               contactidsList = accountrecord.ContactIDs__c.split(',');
             }
             Integer isContactIdExists=1;
             for(Integer i =0;i<contactidsList.size();i++){
