@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Parking</title>
+		<link rel="stylesheet" href="./parking.css" />
+	</head>
+	<body>
+		<header id="navBar">
+			<h3 id="navHeading">Parking System</h3>
+			<ul class="navLink">
+				<li><a href="#addEmployee">Add Employee</a></li>
+				<li><a href="#addVehicle">Add Vehicle</a></li>
+				<li><a href="#giveFeedback">Give feedback</a></li>
+				<li><a href="#pricing">Pricing</a></li>
+			</ul>
+		</header>
+		<image src="./images/parking.jpg" width="100%" alt="parking image"></image>
+
+		<!-- Employee detail form -->
+		<div id="addEmployee">
+			<h1 class="titleHeading" id="employee-heading">Add Employee</h1>
+			<p id="employee-message">Please Enter your Name</p>
+			<form id="employee-form" onsubmit="return false">
+				<div class="employee-field" id="employee-field1">
+					<label>Full Name* :</label>
+					<input
+						type="text"
+						id="name"
+						name="name"
+						required
+						minlength="2"
+						maxlength="40"
+						placeholder=" joe "
+					/>
+				</div>
+				<div class="employee-field" id="employee-field2">
+					<input
+						type="radio"
+						id="male"
+						name="gender"
+						value="male"
+						class="gender"
+					/>
+					<label for="male" class="gender">Male</label>
+					<input
+						type="radio"
+						class="gender"
+						id="female"
+						name="gender"
+						value="female"
+					/>
+					<label for="female" class="gender">Female</label>
+					<input
+						type="radio"
+						class="gender"
+						id="other"
+						name="gender"
+						value="other"
+					/>
+					<label for="other" class="gender">Other</label>
+				</div>
+				<div class="employee-field" id="employee-field3">
+					<label>Email* :</label>
+					<input
+						type="email"
+						id="email"
+						name="email"
+						required
+						placeholder=" abc@gmail.com"
+					/>
+				</div>
+				<div class="employee-field" id="employee-field4">
+					<label>Password* :</label>
+					<input
+						type="password"
+						id="password"
+						name="password"
+						required
+						placeholder="********"
+						minlength="6"
+						maxlength="10"
+					/>
+					<label>Confirmed Password* :</label>
+					<input
+						type="password"
+						id="confirmPassword"
+						name="confirmPassword"
+						placeholder="********"
+						required
+						minlength="6"
+						maxlength="10"
+					/>
+				</div>
+				<div class="employee-field" id="employee-field5">
+					<label>Contact Number* :</label>
+					<input
+						type="text"
+						id="mobile_number"
+						name="mobile_number"
+						required
+						minlength="10"
+						placeholder="9834578733"
+						maxlength="10"
+					/>
+					<input
+						type="submit"
+						value="Submit"
+						class="btn"
+						id="employee-submit"
+					/>
+				</div>
+				<p id="employee-error"></p>
+			</form>
+		</div>
+		<!-- Vechicle form  -->
+		<div id="addVehicle">
+			<h1 class="titleHeading" id="vechicle-heading">Add Vehicle</h1>
+			<p id="vechicle-message"></p>
+			<form id="vechicle-form" onsubmit="return false">
+				<div id="vechicle-field1" class="vechile-field">
+					<label>Vehicle Make (Company)* :</label>
+					<input type="text" id="company" name="company" required />
+				</div>
+				<div id="vechicle-field2" class="vechile-field">
+					<label>Vehicle Model* :</label>
+					<input type="text" id="vechModel" name="vechModel" required />
+				</div>
+				<div id="vechicle-field3" class="vechile-field">
+					<label for="type">Type* :</label>
+					<select name="type" id="type">
+						<option value="cycle">Cycle</option>
+						<option value="motorCycle">MotorCycle </option>
+						<option value="fourWheeler">Four Wheelers </option>
+					</select>
+				</div>
+				<div id="vechicle-field4" class="vechile-field">
+					<label>Vehicle Number* :</label>
+					<input
+						type="text"
+						id="vehNumber"
+						name="vehNumber"
+						required
+						minlength="4"
+						maxlength="8"
+					/>
+				</div>
+
+				<div id="vechicle-field5" class="vechile-field">
+					<label>Employee Id* :</label>
+					<input type="text" id="employeeId" name="employeeId" required />
+				</div>
+
+				<div id="vechicle-field6" class="vechile-field">
+					<label>Identification* :</label>
+					<textarea
+						cols="40"
+						rows="3"
+						id="identification"
+						name="identification"
+						placeholder="Color, mark,visible accessory etc"
+						required
+					></textarea>
+					<input
+						type="submit"
+						value="Submit"
+						class="btn"
+						id="vechicle-submit"
+					/>
+				</div>
+				<p id="vechicle-error"></p>
+			</form>
+		</div>
+
+		<!-- Pricing details container  -->
+		<div id="pricing">
+			<h1 class="titleHeading">Pricing</h1>
+			<div id="language" class="">
+				<label for="type">Price In </label>
+				<select name="type" id="currency">
+					<option value="dollar">Dollar</option>
+					<option value="rupees">Rupees </option>
+					<option value="yen">Yen </option>
+				</select>
+			</div>
+			<div class="priceContainer" id="vechicle-price">
+				<div class="price" id="price-plan">
+					<p class="price-heading-tag" id="plan-heading"></p>
+					<div class="monthly-circle-container">
+						<p><b id="choose-price"></b></p>
+						<p class="month" id="choose-plan"></p>
+					</div>
+					<div class="price-container">
+						<p class="price-choose" id="dailyPlan"></p>
+						<p class="price-choose" id="monthlyPlan"></p>
+						<p class="price-choose" id="yearlyPlan"></p>
+					</div>
+					<button class="btn purchageBtn" id="motorCyclePurchageBtn">
+						GET Pass
+					</button>
+				</div>
+			</div>
+		</div>
+		<!-- Pass -->
+		<div id="pass" class="pass-container">
+			<h1 id="pass-heading"></h1>
+			<p id="employee-id"></p>
+			<p id="employee-vechicle"></p>
+			<p id="employee-number"></p>
+			<p id="employee-plan"></p>
+		</div>
+		<!-- Feedback form -->
+		<div id="giveFeedback">
+			<h1 class="titleHeading" id="feedback-heading">Give FeedBack</h1>
+			<form id="feedback-form">
+				<label>Name :</label>
+				<input
+					type="text"
+					id="feedbackName"
+					name="feedbackName"
+					required
+				/><br />
+				<label>Email :</label>
+				<input
+					type="email"
+					id="feedbackMail"
+					name="feedbackMail"
+					required
+				/><br />
+				<label>Subject :</label>
+				<input type="text" id="subject" name="subject" required /><br />
+				<label>Message :</label>
+				<textarea
+					cols="40"
+					rows="3"
+					id="message"
+					name="message"
+					placeholder="Message"
+					required
+				></textarea
+				><br />
+				<input type="submit" value="Submit Feedback" class="btn" />
+			</form>
+		</div>
+		<script src="./parkingts.js"></script>
+	</body>
+</html>

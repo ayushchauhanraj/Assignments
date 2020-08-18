@@ -1,0 +1,181 @@
+* {
+	margin: 0rem;
+	padding: 0rem;
+}
+
+/* Navigation bar syles */
+#navHeading {
+	float: left;
+	margin: 0rem;
+}
+ul {
+	list-style-type: none;
+	overflow: hidden;
+	float: right;
+}
+li {
+	font-size: 1.2rem;
+	display: inline;
+}
+a {
+	text-decoration: none;
+	color: rgb(102, 18, 238);
+}
+#navBar {
+	background-color: rgb(251, 251, 251);
+}
+/* Set border and its radius around elements */
+.titleHeading,
+#navBar,
+#addEmployee,
+#addVehicle,
+#giveFeedback,
+#pricing {
+	color: rgb(68, 68, 241);
+	overflow: hidden;
+	font-size: 1.5rem;
+	border: 0.1rem solid rgb(0, 25, 248);
+	border-radius: 1rem;
+	padding: 1rem;
+	margin: 0rem;
+	text-transform: uppercase;
+	margin-right: 0.7rem;
+	margin-left: 0.7rem;
+}
+.titleHeading {
+	color: rgb(88, 85, 250);
+	text-align: center;
+	background-color: rgb(251, 251, 251);
+	text-transform: uppercase;
+	cursor: pointer;
+}
+
+/* Give marign for all containers addEmployee,addVehicle... */
+#addEmployee,
+#addVehicle,
+#giveFeedback,
+#pricing {
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+}
+
+/* Form element styles */
+form {
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	color: rgb(78, 78, 90);
+	font-size: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	/* display: none; */
+}
+label {
+	margin-left: 2rem;
+}
+input,
+select,
+textarea {
+	color: rgb(76, 76, 83);
+	font-size: 1.5rem;
+	border: 0.1rem solid rgb(175, 183, 253);
+	border-radius: 0.5rem;
+	margin: 1rem;
+	margin-left: 2rem;
+}
+
+/* Pricing div style */
+.priceContainer {
+	margin-top: 1rem;
+	align-items: center;
+	display: flex;
+	justify-content: space-around;
+}
+.price {
+	border: 0.1rem solid rgb(0, 25, 248);
+	border-radius: 1rem;
+	width: 20%;
+	text-align: center;
+	padding: 1rem;
+	display: inline-block;
+	align-content: center;
+}
+
+.price-heading-tag {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	color: rgb(37, 37, 41);
+	font-size: 1rem;
+	font-weight: bold;
+	font-variant: unset;
+}
+
+.monthly-circle-container {
+	border: 0.1rem solid rgb(47, 48, 54);
+	border-radius: 60%;
+	width: 5rem;
+	height: 5rem;
+	align-items: center;
+	margin: auto;
+	color: black;
+	overflow: hidden;
+}
+.monthly-circle-container > p {
+	margin: 0rem;
+	margin-top: 1.2rem;
+	margin-bottom: -1rem;
+}
+.month {
+	margin-top: -1rem;
+	font-size: 0.3rem;
+}
+.price-container {
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+.price-container > p {
+	margin: 0rem;
+	font-size: 1rem;
+	color: rgba(64, 64, 68, 0.5);
+}
+
+.btn {
+	border: 0.1rem solid rgb(0, 25, 248);
+	border-radius: 0.5rem;
+	padding: 0.5rem;
+	background-color: rgba(255, 255, 255, 0.822);
+	cursor: pointer;
+}
+/* hide - show class  */
+.hide {
+	display: none;
+}
+
+.price-container {
+	cursor: pointer;
+}
+#employee-message,
+#vechicle-message {
+	text-align: center;
+	color: rgb(0, 0, 0);
+	font-size: 1.1rem;
+	margin: 0.3rem;
+}
+#pass {
+	text-align: center;
+	font-size: 1.1rem;
+	padding: 2rem;
+	margin: 0.3rem;
+	margin-bottom: 3rem;
+	border: 0.1rem solid rgb(20, 36, 179);
+	border-radius: 0.5rem;
+	width: 50%;
+	margin-left: 22%;
+	color: rgb(221, 122, 29);
+}
+#vechicle-error,
+#employee-error {
+	color: red;
+	margin-top: 1.5rem;
+	font-size: 1rem;
+}
