@@ -1,0 +1,21 @@
+<template>
+  <div class="container">
+    <template for:each={contacts} for:item="contact">
+      <lightning-card
+        variant="Narrow"
+        title={contact.fields.FirstName}
+        icon-name="standard:contact"
+        key={contact.fields.id}
+      >
+        <p class="slds-p-horizontal_small">
+          Name : {contact.fields.FirstName} {contact.fields.LastName}
+        </p>
+        <p class="slds-p-horizontal_small">Email : {contact.fields.Email}</p>
+        <p class="slds-p-horizontal_small">
+          Phone :{contact.fields.MobilePhone}
+        </p>
+        <p class="slds-p-horizontal_small">Fax : {contact.fields.Fax}</p>
+      </lightning-card>
+    </template>
+  </div>
+</template>
