@@ -1,0 +1,40 @@
+<aura:component>
+    <aura:registerEvent name="createContact" type="c:newContactEvent"/>
+    <aura:attribute name="contact" type="Contact" default="{'sobjectType':'contact','FirstName':'','LastName':'','Email':'','MobilePhone':'','Fax':''}"/>
+    <lightning:layout>
+        <lightning:layoutItem padding="around-small" size="6">
+            <div aria-labelledby="newContactform">
+                <fieldset class="slds-box slds-theme_default slds-container_small">
+                    <legend id="newexpenseform" class="slds-text-heading_small slds-p-vertical_medium">
+                        Add Contact
+                    </legend>
+                    <form class="slds-form_stacked">
+                        
+                        <lightning:input  aura:id="contactform" label="FirstName"
+                                         name="contactFirstName"
+                                         value="{!v.contact.FirstName}"
+                                         />
+                        <lightning:input aura:id="contactform" label="LastName"
+                                         name="contactLastName"
+                                         value="{!v.contact.LastName}"
+                                         required="true"
+                                         />
+                        <lightning:input type="email" aura:id="contactform" label="Email"
+                                         name="email"
+                                         value="{!v.contact.Email}" />
+                        <lightning:input  aura:id="contactform" label="Fax"
+                                         name="fax"
+                                         value="{!v.contact.Fax}"/>
+                        <lightning:input type="number" aura:id="contactform" label="Phone No."
+                                         min = "8"
+                                         name="phone No."
+                                         value="{!v.contact.MobilePhone}"/>
+                        <lightning:button label="Create Contact" class="slds-m-top_medium"
+                                          variant="brand"
+                                          onclick="{!c.createContact}"/>
+                    </form>
+                </fieldset>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

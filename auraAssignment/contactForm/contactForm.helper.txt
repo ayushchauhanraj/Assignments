@@ -1,0 +1,8 @@
+({ 
+    createNewContact : function(component,newContact) {
+		let createEvent = component.getEvent("createContact");
+        createEvent.setParams({"newContact":newContact});
+        createEvent.fire();
+        component.set('v.contact',"{'FirstName':'','LastName':'','Email':'','Phone':'','Fax':''}");
+	}
+})

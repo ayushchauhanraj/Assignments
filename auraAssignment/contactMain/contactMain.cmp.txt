@@ -1,0 +1,15 @@
+<aura:component  controller="ContactCreate" > 
+    <aura:attribute name="contacts" type="Contact[]"/>
+    <aura:attribute name="message" type="String"/>
+    <aura:handler name="createContact" event="c:newContactEvent" action="{!c.handleCreateContact}"/>
+    <c:contactHeader/>
+    <c:contactForm/>
+    <aura:if isTrue="{!(v.message == 'SUCCESS')}">
+        Successfully Saved !
+    </aura:if> 
+    <aura:if isTrue="{!(v.message == 'FAILED')}">
+        SOME PROBLEM!
+    </aura:if> 
+    <c:contactList contacts="{!v.contacts}"/>
+    
+</aura:component>

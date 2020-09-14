@@ -1,0 +1,6 @@
+({
+  handleCreateContact: function(component, event, helper) {
+        let newContact = event.getParam("newContact");
+        helper.createContact(component, newContact);
+    },
+})

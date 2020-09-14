@@ -1,0 +1,17 @@
+({
+	createContact : function(component, event, helper) {
+       /* let isContactFormValid = component.find('expenseform').reduce(function(validSoFar,inputComponent){
+            inputComponent.showHelpMessageIfInvalid();
+            return validSoFar && inputComponent.get('v.validity').valid;
+        },true);*/
+         let isContactFormValid = component.find('contactform').reduce(function (validSoFar, inputCmp) {
+            inputCmp.showHelpMessageIfInvalid();
+            return validSoFar && inputCmp.get('v.validity').valid;
+        }, true);
+        if(isContactFormValid){
+            let newContact = component.get("v.contact");
+            console.log(newContact);
+            helper.createNewContact(component,newContact);
+        }
+	}
+})
