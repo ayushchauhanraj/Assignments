@@ -1,0 +1,19 @@
+public with sharing class onlineShoppingService {
+    public Interface API{
+        List<Purchase_Order__c> getPurchaseOrders(String sortExpression);
+        List<Product2> getProducts();
+        Purchase_Order__c insertOrder(Purchase_Order__c purchaseOrder,List<Product2> productItemsList, List<PurchaseOrderLineItem__c> purchaseOrderLineItemList);
+    }
+    
+    public static List<Purchase_Order__c> getPurchaseOrders(String sortExpression) {
+        return onlineShoppingServiceImpl.getPurchaseOrders(sortExpression);
+    }
+    
+    public static List<Product2> getProducts(){
+        return onlineShoppingServiceImpl.getProducts();
+    }
+    
+    public static Purchase_Order__c insertOrder(Purchase_Order__c purchaseOrder,List<Product2> productItemsList, List<PurchaseOrderLineItem__c> purchaseOrderLineItemList){
+        return onlineShoppingServiceImpl.insertOrder(purchaseOrder,productItemsList,purchaseOrderLineItemList);
+    } 
+}

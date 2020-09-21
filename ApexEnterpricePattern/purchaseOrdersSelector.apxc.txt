@@ -1,0 +1,15 @@
+public class purchaseOrdersSelector extends fflib_SObjectSelector {
+    public List<Schema.SObjectField> getSObjectFieldList() {
+        return new List<Schema.SObjectField> {
+            Purchase_Order__c.status__c,
+                Purchase_Order__c.OrderPrice__c
+                };
+     }
+    public Schema.SObjectType getSObjectType() {
+        return Purchase_Order__c.sObjectType;
+    }
+    public List<Purchase_Order__c> selectAll(String sortFullExp){
+        String queryOnPurchaseOrder = String.format('Select {0} from {1} order by {2}',new List<String> {getFieldListString(), getSobjectName(),sortFullExp});
+        return (List<Purchase_Order__c>) Database.query(queryOnPurchaseOrder);
+    }
+}

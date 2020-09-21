@@ -1,0 +1,146 @@
+<apex:page docType="html-5.0" standardController="Purchase_Order__c" title="Online Shopping" recordSetVar="productorderList" extensions="onlineShoppingController">
+    <apex:form >
+        <head>
+            <apex:slds /> 
+            <script>
+            function deleteRecord(value){
+                if (window.confirm('Remove This Item From Your Cart ?')){
+                    deleteCartProduct(`${value}`);
+                } 
+            }
+            function productSort(){
+                sortproduct();
+            }
+            </script>
+        </head>
+        <apex:pageBlock id="mainBlock"  >
+            <h1 style="margin-left:47%;font-size:1rem;color:red;margin-bottom:0.3rem">
+                Online Shopping 
+            </h1>
+            <apex:pageBlock title="Purchase Order history " id="pruchase_List" rendered="{!purchaseOrderBlockFlag}">
+                <apex:pageBlockTable value="{!productorderList}" var="order">
+                    <apex:column value="{!order.id}">
+                        <apex:facet name="header">PO ID</apex:facet>   
+                    </apex:column>
+                    <apex:column value="{!order.OrderPrice__c}"> 
+                        <apex:facet name="header">
+                            <apex:commandLink action="{!sortpurchaseOrder}" value="Order Price {!IF(sortExpression=='OrderPrice__c',IF(sortDirection='ASC','▼','▲'),'')}" reRender="pruchase_List">
+                                <apex:param value="OrderPrice__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>
+                    </apex:column>
+                    <apex:column value="{!order.status__c}"> 
+                        <apex:facet name="header">
+                            <apex:commandLink action="{!sortpurchaseOrder}" value="Status {!IF(sortExpression=='status__c',IF(sortDirection='ASC','▼','▲'),'')}" reRender="pruchase_List">
+                                <apex:param value="status__c" name="column" assignTo="{!sortExpression}" ></apex:param>
+                            </apex:commandLink>
+                        </apex:facet>           
+                    </apex:column>
+                    
+                </apex:pageBlockTable>
+                <table style="width: 100%"><tr>
+                    <td>
+                        Page: <apex:outputText value=" {!PageNumber} of {! CEILING(ResultSize / PageSize) }"/>
+                        <apex:commandButton action="{! Previous }" value="« Previous"  disabled="{! NOT(HasPrevious)}"/>                                  
+                        <apex:commandButton action="{! First }" value="First" disabled="{! NOT(HasPrevious)}"/>
+                        &nbsp;&nbsp;
+                        <apex:commandButton action="{! Next }" value="Next »" disabled="{! NOT(HasNext)}"/>
+                        &nbsp;
+                        <apex:commandButton action="{! Last }" value="Last" disabled="{! NOT(HasNext)}"/>
+                    </td>
+                    </tr></table>
+                <apex:commandButton action="{!getProducts}" value="Add New purchases" reRender="mainBlock" style="margin-Left:46%"/><br/><br/>
+            </apex:pageBlock>
+            
+            <!-- Products show pageblock-->
+            <apex:pageBlock title="Products"  id="product_List" rendered="{!ProductItemFlag}"> 
+                
+                <apex:pageBlockSection collapsible="false" id="inputsection">
+                    <apex:input html-placeholder="Search Product" id="inputSearch"  value="{!searchValue}">
+                        <apex:actionSupport action="{!getProducts}" event="onchange" reRender="mainBlock"/>
+                    </apex:input>         
+                    <apex:commandButton style="float:right;" action="{! addToCart}" value="Add to Cart" reRender="mainBlock" />
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="1" id="product_table_section">
+                    <apex:pageBlockTable value="{! searchProductList}" var="product" id="product_table">
+                        <apex:column headerValue="Select Product" >
+                            <apex:facet name="selectproduct">Select products</apex:facet>
+                            <apex:inputCheckbox value="{! productIdToBooleanMap[product.id]}" />
+                        </apex:column>
+                        <apex:column value="{!product.Name}" headerValue="Product Name" >
+                            <apex:facet name="header">
+                                <apex:commandLink action="{!sortProduct}" value="Product Name" reRender="product_List">
+                                </apex:commandLink>
+                            </apex:facet>
+                        </apex:column>
+                        <apex:column value="{!product.ProductCode}"></apex:column>
+                        <apex:column value="{!product.Discription__c}"/>
+                        <apex:column value="{!product.Price_per_Unit__c}"></apex:column>
+                        <apex:column value="{!productIdToProductQuantityMap[product]}" headerValue="Quantity"></apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+                <apex:commandButton action="{! firstPage}" reRender="product_List" value="first" disabled="{! NOT(hasPreviousProduct)}"/> 
+                <apex:commandButton action="{!doPreviousProduct}" disabled="{! NOT(hasPreviousProduct)}" value="Previous"  reRender="product_List"/>
+                <apex:commandButton action="{!doNextProduct}" disabled="{!NOT(hasNextProduct)}" value="Next"  reRender="product_List"/>
+                <apex:commandButton action="{! lastPage}" reRender="product_List" disabled="{!NOT(hasNextProduct)}" value="last"/>
+                <apex:outputText value=" Page:{!pageProduct} of  {!totalPagesProduct} "/>
+                <apex:actionFunction name="productSort" action="{!sortProduct}" reRender="mainBlock"/>
+            </apex:pageBlock>	
+            <!-- cart items show pageblock-->
+            <apex:pageBlock title="Cart ITEMS" id="Cart_items" rendered="{! cartItemFlag}">
+                <apex:pageBlockSection id="errorMessage" columns="1">
+                    <apex:pageMessages ></apex:pageMessages>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="1" id="checkout_cart_items" >
+                    <apex:pageBlockTable value="{!purchaseIdToPurchaseOrderItemMap}"  var="cartItemId" id="cart_table">
+                        <apex:column value="{! purchaseIdToPurchaseOrderItemMap[cartItemId].Name}" headerValue="product Name"/>
+                        <apex:column value="{! purchaseIdToPurchaseOrderItemMap[cartItemId].ProductCode__c}" headerValue="product Code"/>
+                        <apex:column value="{!productIdToProductRecordMap[cartItemId].Price_per_Unit__c}" headerValue="Price Per Unit"/>
+                        <apex:column headerValue="Quantity">
+                            <apex:inputField value="{! purchaseIdToPurchaseOrderItemMap[cartItemId].Quantity__c}"  >    
+                                <apex:actionSupport action="{!checkValidationOnQuantity}" event="onkeyup" reRender="mainBlock">
+                                    <apex:param name="checkId" value="{!cartItemId}" assignTo="{!checkId}"/>
+                                </apex:actionSupport>
+                            </apex:inputField>
+                        </apex:column>
+                        <apex:column >
+                            <h1 class="slds-button slds-button_icon" title="Delete" onclick="deleteRecord('{!cartItemId}')"  >
+                                <svg class="slds-button__icon" aria-hidden="true">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/utility-sprite/svg/symbols.svg#delete"></use>
+                                </svg>
+                                <span class="slds-assistive-text">Delete</span>
+                            </h1>
+                        </apex:column>
+                        
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="1" id="checout_btn_section" >
+                    <apex:actionFunction action="{!deleteRecordFromCart}" reRender="mainBlock" name="deleteCartProduct">
+                        <apex:param name="deleteIdRecord" value=""  assignTo="{!deleteIdRecord}"/>
+                    </apex:actionFunction>
+                    <apex:commandButton action="{!checkOut}" reRender="mainBlock" disabled="{!checkoutFlag}" value="CheckOut" style="margin-Left:48%" />
+                </apex:pageBlockSection>
+            </apex:pageBlock>     
+            
+            <!-- Final purchase items page block -->
+            <apex:pageBlock id="purchaseOrder" rendered="{!purhcaseItemFlag}">
+                <apex:outputLabel >Invoice: #{!purchaseOrder.Invoice__c}</apex:outputLabel>
+                <apex:outputLabel style="float:right;"> ORDER Date : {! DAY(TODAY())}-{! MONTH(TODAY())}-{! YEAR(TODAY())}</apex:outputLabel>
+                <apex:pageBlockSection columns="1">
+                    <apex:pageBlockTable value="{!purchaseIdToPurchaseOrderItemMap}" var="cartItemId" >
+                        <apex:column value="{! purchaseIdToPurchaseOrderItemMap[cartItemId].Name}" headerValue="product Name"/>
+                        <apex:column value="{! purchaseIdToPurchaseOrderItemMap[cartItemId].ProductCode__c}" headerValue="product Code"/>
+                        <apex:column value="{! purchaseIdToPurchaseOrderItemMap[cartItemId].Quantity__c}" headerValue="Quantity"/>
+                        <apex:column headerValue="Price per Unit" value="{!productIdToProductRecordMap[cartItemId].Price_per_Unit__c}"/>
+                        <apex:column value="{! purchaseIdToPurchaseOrderItemMap[cartItemId].Total__c}" headerValue="Total"/>   
+                    </apex:pageBlockTable>          
+                </apex:pageBlockSection>
+                <div style="margin-Left:90%" >
+                    Total:<apex:outputField value="{!purchaseOrder.OrderPrice__c}" title="Total"></apex:outputField>
+                </div>
+                <apex:commandButton action="{!handlePurchaseOrder}" value="Place Order" reRender="mainBlock" style="margin-Left:48%"/>
+            </apex:pageBlock>
+            
+        </apex:pageBlock>	
+    </apex:form>
+</apex:page>

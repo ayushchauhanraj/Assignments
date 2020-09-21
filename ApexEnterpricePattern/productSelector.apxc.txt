@@ -1,0 +1,38 @@
+public class productSelector extends fflib_SObjectSelector {
+    
+    public ProductSelector(Boolean includeFieldSetFields) {
+        super(true);
+    }
+    
+    public override List<Schema.FieldSet> getSObjectFieldSetList() {
+        return new List<Schema.FieldSet>{ SObjectType.Product2.FieldSets.MyFieldSet};
+            }
+    
+    public List<Schema.SObjectField> getSObjectFieldList() {
+        return new List<Schema.SObjectField> {
+            Product2.ID,
+                Product2.Name,
+                Product2.ProductCode,
+                Product2.Price_per_Unit__c,
+                Product2.Discription__c,
+                Product2.QuantityAvailable__c
+                };
+                    }
+    
+    public Schema.SObjectType getSObjectType() {
+        return product2.sObjectType;
+    }
+    
+    public List<Product2> selectAll(){
+        /*String query = String.format('Select {0} from {1} where ProductCode != null AND QuantityAvailable__c > 0 ',new List<String> {getFieldListString(), getSobjectName()});
+return (List<Product2>) Database.query( query );*/
+        List<Product2> productsList =  Database.query(
+            newQueryFactory()
+            .selectFieldSet(SObjectType.Product2.FieldSets.MyFieldSet)
+            .setCondition('ProductCode != null AND QuantityAvailable__c > 0')
+            .toSOQL()
+        );
+        System.debug(productsList);
+        return productsList;
+    } 
+}

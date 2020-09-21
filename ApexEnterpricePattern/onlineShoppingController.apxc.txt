@@ -1,0 +1,245 @@
+public class onlineShoppingControllerRectified {
+    public List<Product2> productList{get;set;}
+    public map<Id,product2> productIdToProductRecordMap{get;set;}
+    public map<Id,Decimal> productIdToProductQuantityMap{get;set;}
+    public List<Product2> searchProductList{get;set;}
+    public List<Purchase_Order__c> productorderList{get;set;}
+    public Purchase_Order__c purchaseOrder{get;set;}
+    public id selectedList{get;set;}
+    public map<id,Boolean> productIdToBooleanMap{get;set;}
+    public String searchValue{get;set;}
+    private String sortDirection = 'ASC';
+    private String sortExp = 'status__c';
+    public Boolean cartItemFlag{get;set;}
+    public Boolean ProductItemFlag{get;set;}
+    public Boolean checkoutFlag{get;set;}
+    public Purchase_Order__c LastPurchaseOrderRecord;
+    public Map<id,PurchaseOrderLineItem__c> purchaseIdToPurchaseOrderItemMap{get;set;}
+    //pagination information
+    private static final Integer PAGE_SIZE = 10;
+    public Integer pageProduct{get;set;}
+    public Integer totalRecordsProduct{get;set;}  
+    public Integer totalPagesProduct{get;set;}
+    public Integer startIdx{get;set;}   
+    public Integer endIdx{get;set;}
+    private  decimal record;
+    public Boolean purhcaseItemFlag{get;set;}
+    public Boolean purchaseOrderBlockFlag{get;set;}
+    public Id checkId{get;set;}
+    public String deleteIdRecord {get;set;}
+    
+    public onlineShoppingControllerRectified(ApexPages.StandardSetController std){ 
+        this.searchProductList = new List<Product2>();   
+        this.productorderList = new List<Purchase_Order__c>();
+        sortpurchaseOrder();
+        getAllProducts();
+        this.productList = new List<Product2>();
+        this.productIdToBooleanMap = new Map<id,Boolean>();
+        this.productIdToProductQuantityMap = new map<Id,Decimal>();
+        for(id productId : productIdToProductRecordMap.keyset()){
+            productIdToBooleanMap.put(productId,false);          
+            productIdToProductQuantityMap.put(productId,productIdToProductRecordMap.get(productId).QuantityAvailable__c);
+        } 
+        this.purchaseIdToPurchaseOrderItemMap = new Map<id,PurchaseOrderLineItem__c>();
+        this.pageProduct = 1;
+        this.totalRecordsProduct = productIdToProductRecordMap.values().size();
+        this.cartItemFlag = false; 
+        this.purhcaseItemFlag = false;
+        this.ProductItemFlag  = false;
+        this.checkoutFlag = false;
+        this.purchaseOrderBlockFlag = true;
+        this.searchValue = '';
+    }
+    
+    public void getAllProducts(){
+        this.productIdToProductRecordMap = new map<id,Product2>(onlineShoppingService.getProducts());
+    }
+    
+    public pageReference getProducts(){
+        if(this.PageProduct == 0){
+            this.PageProduct  = 1;
+        }
+        this.startIdx = (this.pageProduct-1)*PAGE_SIZE;
+        this.endIdx = this.pageProduct*PAGE_SIZE;
+        this.record = 0;
+        Product2 productrecord = new product2();
+        searchProductList.clear();
+        for(Product2 product : productIdToProductRecordMap.values()){
+            if(product.name.containsIgnoreCase(searchValue) || product.ProductCode.containsIgnoreCase(searchValue)){ 
+                if(this.record >= this.startIdx && this.record < this.endIdx){
+                    productrecord = product;
+                    searchProductList.add(productrecord);
+                }
+                this.record++;
+            } 
+        }
+        this.totalPagesProduct = (Integer)((Decimal)this.record/10).round(system.RoundingMode.CEILING);
+        if(this.record == 0){
+            this.pageProduct = 0;
+        }
+        this.ProductItemFlag = true;	
+        return null;
+    }  
+    
+    public void sortProduct(){
+        if(searchProductList.size() > 0){
+            searchProductList.sort();
+        }
+    }
+    
+    public void checkValidationOnQuantity(){
+        Decimal quantity = purchaseIdToPurchaseOrderItemMap.get(checkId).Quantity__c;
+        Product2 productRecord = productIdToProductRecordMap.get(checkId);
+        if(quantity == Null ||  quantity == 0 || quantity < 0 || quantity > productRecord.QuantityAvailable__c ){
+            ApexPages.addmessage(new ApexPages.Message(ApexPages.severity.ERROR,'Quantity of '+productRecord.Name +' <= ' +productRecord.QuantityAvailable__c +' And > 0'));
+        }else{
+            productIdToProductQuantityMap.put(checkId,productIdToProductRecordMap.get(checkId).QuantityAvailable__c);
+            Decimal originalQuantity = productIdToProductQuantityMap.get(checkId);
+            originalQuantity -= quantity;
+            productIdToProductQuantityMap.put(checkId,originalQuantity);
+        }
+        this.checkoutFlag =  ApexPages.hasMessages(ApexPages.Severity.ERROR);
+    } 
+    
+    public pageReference sortpurchaseOrder(){
+        productorderList.clear();
+        string sortFullExp = sortExpression  + ' ' + sortDirection;
+        try{
+            productorderList =  onlineShoppingService.getPurchaseOrders(sortFullExp);            
+        }catch(Exception e){
+            ApexPages.addmessage(new ApexPages.Message(ApexPages.severity.ERROR,e.getMessage()));
+        }
+        return null;
+    }
+    
+    public void doNextProduct(){
+        if(getHasNextProduct()){
+            this.pageProduct++;
+            getProducts();
+        }
+    }
+    
+    public void lastPage(){
+        this.pageProduct = this.totalPagesProduct ;
+        getProducts();
+    }
+    
+    public void firstPage(){
+        this.pageProduct = 1 ;
+        getProducts();
+    }
+    
+    public void doPreviousProduct(){
+        if(getHasPreviousProduct()){
+            this.pageProduct--;
+            getProducts();
+        }              
+    }
+    
+    public Boolean getHasPreviousProduct(){
+        if(this.pageProduct > 1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
+    public Boolean getHasNextProduct(){
+        if(this.pageProduct < this.totalPagesProduct){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
+    public String sortExpression{
+        get{
+            return sortExp;
+        }
+        set{
+            if (value == sortExp)
+                sortDirection = (sortDirection == 'ASC')? 'DESC' : 'ASC';
+            else
+                sortDirection = 'ASC';
+            sortExp = value;
+        }
+    }
+    
+    public String getSortDirection(){
+        if (sortExpression == null || sortExpression == '')
+            return 'ASC';
+        else
+            return sortDirection;
+    }
+    
+    public void setSortDirection(String value){  
+        sortDirection = value;
+    }
+    
+    //add to card and create map of purchaseIdToPurchaseOrderItemMap
+    public void addToCart(){      
+        for(Id productId : productIdToBooleanMap.keySet()){
+            Decimal quantity = productIdToProductQuantityMap.get(productId);  
+            if(productIdToBooleanMap.get(productId) && quantity != 0){       
+                if(purchaseIdToPurchaseOrderItemMap.containsKey(productId)){
+                    purchaseIdToPurchaseOrderItemMap.get(productId).Quantity__c++;
+                }else{
+                    Product2 productRecord = productIdToProductRecordMap.get(productId);
+                    PurchaseOrderLineItem__c pruchaseOrderLineItemRecord = 
+                        new PurchaseOrderLineItem__c(Name = productRecord.Name,Quantity__c = 1,ProductId__c = productId,ProductCode__c = productRecord.ProductCode);
+                    purchaseIdToPurchaseOrderItemMap.put(productId, pruchaseOrderLineItemRecord);
+                }
+                productIdToBooleanMap.put(productId,false);
+                quantity--;
+                productIdToProductQuantityMap.put(productId,quantity);
+            }
+        }
+        if(!purchaseIdToPurchaseOrderItemMap.isEmpty()){
+            this.cartItemFlag = true;
+        }
+    }	
+    
+    public void deleteRecordFromCart(){
+        if(purchaseIdToPurchaseOrderItemMap.containsKey(deleteIdRecord)){
+            productIdToProductQuantityMap.put(deleteIdRecord,productIdToProductRecordMap.get(deleteIdRecord).QuantityAvailable__c);
+            purchaseIdToPurchaseOrderItemMap.remove(deleteIdRecord);
+        }
+        if(purchaseIdToPurchaseOrderItemMap.isEmpty()){
+            this.cartItemFlag = false;
+        }
+    }
+    
+    public void handlePurchaseOrder(){
+        try{ 
+            onlineShoppingService.insertOrder(purchaseOrder,productIdToProductRecordMap.values(),purchaseIdToPurchaseOrderItemMap.values());
+            this.purhcaseItemFlag = false;	 
+            this.purchaseOrderBlockFlag = true;
+            sortpurchaseOrder();
+        }catch(Exception e){
+            ApexPages.addmessage(new ApexPages.Message(ApexPages.severity.ERROR,e.getMessage()));
+        }
+    }
+    
+    public pageReference checkOut(){
+        Double total = 0;
+        for(PurchaseOrderLineItem__c purchaseItem : purchaseIdToPurchaseOrderItemMap.values()){
+            purchaseItem.Total__c = purchaseItem.Quantity__c * productIdToProductRecordMap.get(purchaseItem.ProductId__c).Price_per_Unit__c;
+            total+=purchaseItem.Total__c;
+            productIdToProductRecordMap.get(purchaseItem.ProductId__c).QuantityAvailable__c -= purchaseItem.Quantity__c;
+        }
+        if(!purchaseIdToPurchaseOrderItemMap.isEmpty() && total != 0){
+            Integer lengthOfInvoice = 7;
+            String str = string.valueof(Math.abs(Crypto.getRandomLong()));
+            String randomNumber = str.substring(0, lengthOfInvoice);
+            Integer invoiceNo = Integer.valueof(randomNumber);
+            purchaseOrder = new Purchase_Order__c(OrderPrice__c = total,invoice__c = invoiceNo);
+            this.purhcaseItemFlag = true;	  
+            this.cartItemFlag = false;
+            this.ProductItemFlag = false;	
+            this.purchaseOrderBlockFlag = false;
+        }
+        return null;
+    }
+}
