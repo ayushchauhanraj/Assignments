@@ -1,0 +1,17 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" Controller = "AccountsData" >
+  
+    <aura:registerEvent name="navEvt" type="force:navigateToURL"/>
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <lightning:navigation aura:id="navId"/>
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+   
+    <div style="height: 600px">
+        <lightning:datatable
+                             columns="{! v.columns }"
+                             data="{! v.data }"
+                             keyField="id"
+                             hideCheckboxColumn="true"
+                             onrowaction="{! c.handleRowAction }"/>
+    </div>
+</aura:component>

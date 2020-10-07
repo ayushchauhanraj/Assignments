@@ -1,0 +1,28 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" > 
+    <aura:attribute name="attachedDocs" type="ContentDocument[]"/>
+    <aura:iteration items="{!v.attachedDocs}" var="item">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col  slds-size_0-of-3">
+                <span> <lightning:icon iconName="{!'doctype:'+item.FileExtension}" size="medium" alternativeText="Indicates approval"/>
+                </span>
+            </div>
+            <div class="slds-col  slds-size_2-of-3">
+                <p style="color:blue"> {!item.Title}.{!item.FileExtension} </p> 
+                <p>
+                    <ul class="slds-list_horizontal slds-has-dividers_right">
+                        <li class="slds-item"><lightning:formattedDateTime value="{!item.LastModifiedDate}"/></li>
+                        <li class="slds-item"><aura:if isTrue="{!lessthan(item.ContentSize,1024)}">
+                            <lightning:formattedNumber value="{! item.ContentSize}"  maximumFractionDigits="0"/>Bytes
+                            </aura:if>
+                            <aura:if isTrue="{! and (greaterthan(item.ContentSize,1024),lessthan(item.ContentSize,1024*1024))}">  
+                                <lightning:formattedNumber value="{! item.ContentSize/1024}"  maximumFractionDigits="0"/>KB
+                            </aura:if>
+                            <aura:if isTrue="{! and (greaterthan(item.ContentSize,1024*1024),lessthan(item.ContentSize,1024*1024*1024))}">
+                                <lightning:formattedNumber value="{! item.ContentSize/(1024*1024)}"  maximumFractionDigits="0"/>MB
+                            </aura:if></li>
+                    </ul>
+                </p>
+            </div>
+        </div><br/>
+    </aura:iteration>
+</aura:component>

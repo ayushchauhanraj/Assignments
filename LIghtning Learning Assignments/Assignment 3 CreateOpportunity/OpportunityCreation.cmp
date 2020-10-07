@@ -1,0 +1,54 @@
+<aura:component implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" Controller="OpportunityCreation">
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="monthDays" type="list" />
+    <aura:attribute name="maxMonthDays" type="list" />
+    <aura:attribute name="year" type="Integer"/>
+    <aura:attribute name="opportunity" type="list"/>
+    
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span> Create Opportunities for year {!v.year}</span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <lightning:button label="Create Opportunities" title="Non-primary action" onclick="{!c.createOpportunity}" class="slds-m-left_x-small"/>
+        </div>
+    </article>
+    
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead >
+            <tr class="slds-line-height_reset">
+                <th scope="col">    
+                    <lightning:input type="checkbox" name="selectAll" id="checkbox-unique-id-297" value="" tabindex="0" onchange="{!c.handleSelectAll}" />
+                </th>
+                <aura:iteration items="{!v.monthDays}" var = "month">
+                    <th class="" scope="col"> 
+                        <lightning:input type="checkbox" name="months" id="{!month}" value="{!month.Key}" tabindex="0" onchange="{!c.handleCheckboxes}" label="{!month.label}"/>
+                    </th>
+                </aura:iteration>
+            </tr>
+        </thead>
+        <tbody>
+            <aura:iteration items="{!v.maxMonthDays}" var = "day">
+                <tr class="slds-hint-parent">
+                    <th data-label="Opportunity Name" scope="row">
+                        <lightning:input type="checkbox" name="days" id="{!day}" value="{!day}" onchange="{!c.handleCheckboxes}" label="{!day}"/>
+                    </th>
+                    <aura:iteration items="{!v.monthDays}" var="monthday" indexVar="key">
+                        <td data-label="Opportunity Name" scope="row">
+                            <aura:if isTrue="{! lessthan(day-1,monthday.Value)}">
+                                <lightning:input type="checkbox" name="{!day+' '+monthday.Key}" value="{!monthday.Key+'/'+day+'/'+v.year}" aura:id="opp" onchange="{!c.handleCheckboxes}" />
+                            </aura:if>
+                        </td>
+                    </aura:iteration>
+                </tr>
+            </aura:iteration>
+        </tbody>
+    </table>
+</aura:component>

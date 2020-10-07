@@ -1,0 +1,18 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global">
+   
+    <aura:attribute name="recordId" type="String" />
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <aura:attribute name="fields" type="String[]" default="['Name','AccountId','MobilePhone','Birthdate','Phone','Email','OtherAddress']" />
+   
+    <lightning:card title="Create Contact">
+        <lightning:recordForm
+                              aura:id="myRecordForm"
+                              recordId="{!v.recordId}"
+                              objectApiName="Contact"
+                              fields="{!v.fields}"
+                              columns="2"
+                              mode="edit"
+                              onsuccess="{!c.handleSuccess}" 
+                              />
+    </lightning:card>
+</aura:component>

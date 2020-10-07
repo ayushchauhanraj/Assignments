@@ -1,0 +1,29 @@
+<aura:component Controller = "ClosedOpportunity" >
+    <aura:attribute name = "opportunites" type="Opportunity[]" />
+    <aura:handler name="init" value="{!this}" action="{!c.getOpp}"/>
+    <div class="slds-p-horizontal_small">
+        <aura:iteration items="{!v.opportunites}" var="item">
+            <div class="slds-grid slds-p-horizontal_small ">
+                <div class="slds-col slds-size_1-of-6 slds-p-left_medium slds-text-title_bold" style="font-size:1.1rem">
+                    <p style="color:blue">   
+                        <aura:if isTrue="{!item.Amount > 1000000}">
+                            ${!item.Amount/1000000 + 'M'}
+                            <aura:set attribute="else">
+                                ${!item.Amount /1000 + 'K'}
+                            </aura:set>	
+                        </aura:if> 
+                    </p>
+                    <p style="text-transform: uppercase;color:#b5b3ae">
+                        <lightning:formattedDateTime value="{!item.CloseDate}"  month="short" day="2-digit"/>
+                    </p>  
+                </div>
+                <div class="slds-col slds-size_3-of-6 slds-text-title_bold"  style="font-size:1.1rem">
+                    <p style="color:blue">{!item.Name}</p>
+                    <p style="color:#b5b3ae">{!item.Account.Name}</p>
+                </div>
+                <div class="slds-col slds-size_2-of-6 slds-text-title_bold" style="color:blue;font-size:1.1rem">{!item.LeadSource}</div>
+            </div>
+            <hr style="border-top-width: 2px;border-top-style: solid;border-top-color: #49a8d1;"/>    
+        </aura:iteration>	
+    </div>
+</aura:component>
